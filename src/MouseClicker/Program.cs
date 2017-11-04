@@ -26,7 +26,7 @@ namespace MouseClicker
 
         static void Main(string[] args)
         {
-            // We will be indefinitely making click if needed
+            // We will be infinitely making click if needed
             while (true)
             {
                 if (CheckClick())
