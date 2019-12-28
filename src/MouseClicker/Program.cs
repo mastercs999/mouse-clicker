@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
@@ -16,24 +18,45 @@ namespace MouseClicker
         private static extern short GetAsyncKeyState(int vKey);
 
         [DllImport("user32.dll", SetLastError = true)]
-        static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
+        private static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
 
         [DllImport("user32.dll")]
-        static extern bool PostMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
+        private static extern bool PostMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
+
+        private static readonly string ExeFileName = "Stronghold Crusader.exe";
 
 
 
 
         static void Main(string[] args)
         {
-            // We will be infinitely making click if needed
-            while (true)
-            {
-                if (CheckClick())
-                    DoMouseClick(1);
+            // Will we start Crusader on user behalf?
+            bool crusaderAutoStart = File.Exists(ExeFileName);
 
-                Thread.Sleep(1);
+            // Start thread with auto clicking
+            new Thread(() =>
+            {
+                // We will be infinitely making click if needed
+                while (true)
+                {
+                    if (CheckClick())
+                        DoMouseClick(1);
+
+                    Thread.Sleep(1);
+                }
+            })
+            {
+                IsBackground = crusaderAutoStart
+            }.Start();
+
+            // Start Crusader
+            if (crusaderAutoStart)
+            {
+                Console.WriteLine("Stronghol Crusader will be started for you...");
+                Process.Start(ExeFileName).WaitForExit();
             }
+            else
+                Console.WriteLine("Hack works. Pleast start Stronghold Crusader.");
         }
 
         private static bool CheckClick()
