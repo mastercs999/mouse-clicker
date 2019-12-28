@@ -52,7 +52,7 @@ namespace MouseClicker
             // Start Crusader
             if (crusaderAutoStart)
             {
-                Console.WriteLine("Stronghol Crusader will be started for you...");
+                Console.WriteLine("Stronghold Crusader will be started for you...");
                 Process.Start(ExeFileName).WaitForExit();
             }
             else
